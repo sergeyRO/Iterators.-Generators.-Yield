@@ -1,15 +1,24 @@
 class FlatIterator:
-    new_list = list()
+
     def __init__(self, list):
-        self.list = [x for l in list for x in l]
-        self.i = -1
-        self.len_list = len(self.list)
+        self.list = list
 
     def __iter__(self):
+        self.num_item = -1
+        self.result = iter([])
+        self.len_list = len(self.list)
         return self
 
     def __next__(self):
-        self.i += 1
-        if self.i >= self.len_list:
-            raise StopIteration
-        return self.list[self.i]
+        try:
+            item = next(self.result)
+        except StopIteration:
+            self.num_item += 1
+            if self.num_item >= self.len_list:
+                raise StopIteration
+            try:
+                self.result = iter(self.list[self.num_item])
+                item = next(self.result)
+            except TypeError:
+                item = self.list[self.num_item]
+        return item
